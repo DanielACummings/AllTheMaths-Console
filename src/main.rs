@@ -1,8 +1,6 @@
 use std::io::stdin;
 
 fn main() {
-    let mut prev: i32 = 0;
-    let mut current: i32 = 1;
     let user_options: [&str; 1] = ["Print 1st 10 fibonacci numbers"];
 
     // Print user_options as a numbered list
@@ -16,14 +14,25 @@ fn main() {
     stdin().read_line(&mut user_input).unwrap();
 
     if user_input.trim() == "1" {
-        println!("\n1st 10 fibonacci numbers:");
-
-        for counter in 0..10 {
-            print!("{}:", (counter + 1).to_string());
-            println!("{}", prev);
-            let next: i32 = prev + current;
-            prev = current;
-            current = next;
-        }
+        let fibonacci_text: String = fibonacci();
+        println!("{}", fibonacci_text);
     }
+}
+
+fn fibonacci() -> String {
+    let mut current: i32 = 1;
+    let mut prev: i32 = 0;
+    let mut ret_text: String = String::new();
+
+    ret_text.push_str("\n1st 10 fibonacci numbers:");
+
+    for counter in 1..11 {
+        let next: i32 = prev + current;
+        let fib_text: String = format!("\n{}: {}", (counter).to_string(), prev);
+        ret_text.push_str(&fib_text);
+        prev = current;
+        current = next;
+    }
+
+    ret_text
 }
