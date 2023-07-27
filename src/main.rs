@@ -1,7 +1,11 @@
 use std::io::stdin;
 
 fn main() {
-    let user_options: [&str; 1] = ["Print 1st 10 fibonacci numbers"];
+    // Todo: turn into HashMap
+    let user_options: [&str; 2] = [
+        "Print 1st 10 fibonacci numbers",
+        "Convert number to binary",
+    ];
 
     // Print user_options as a numbered list
     println!("Enter number below to choose option:");
@@ -10,12 +14,16 @@ fn main() {
     }
 
     // Get user input
+    // Todo: Use Ok() or Err() for input validation
     let mut user_input: String = String::new();
     stdin().read_line(&mut user_input).unwrap();
 
+    // Todo: reference HashMap in future
     if user_input.trim() == "1" {
         let fibonacci_text: String = fibonacci();
         println!("{}", fibonacci_text);
+    } else if user_input.trim() == "2" {
+        number_to_binary();
     }
 }
 
@@ -35,4 +43,8 @@ fn fibonacci() -> String {
     }
 
     ret_text
+}
+
+fn number_to_binary() {
+    
 }
