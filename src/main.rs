@@ -15,15 +15,25 @@ fn main() {
 
     // Get user input
     // Todo: Use Ok() or Err() for input validation
-    let mut user_input: String = String::new();
-    stdin().read_line(&mut user_input).unwrap();
+    let mut user_option: String = String::new();
+    stdin().read_line(&mut user_option).unwrap();
 
     // Todo: reference HashMap in future
-    if user_input.trim() == "1" {
+    if user_option.trim() == "1" {
         let fibonacci_text: String = fibonacci();
         println!("{}", fibonacci_text);
-    } else if user_input.trim() == "2" {
-        number_to_binary();
+    } else if user_option.trim() == "2" {
+        println!("\nEnter number to convert to binary: ");
+        let mut user_num_res: String = String::new();
+        stdin().read_line(&mut user_num_res).unwrap();
+        let user_num: i32 = match user_num_res.trim().parse() {
+            Ok(num) => num,
+            Err(_) => {
+                println!("Please enter a valid number");
+                return;
+            }
+        };
+        number_to_binary(user_num);
     }
 }
 
@@ -45,6 +55,6 @@ fn fibonacci() -> String {
     ret_text
 }
 
-fn number_to_binary() {
-    
+fn number_to_binary(user_num: i32) {
+    println!("{}", user_num.to_string());
 }
