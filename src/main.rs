@@ -1,7 +1,11 @@
+use std::char::from_digit;
+use std::convert::TryInto;
 use std::io::stdin;
 
 fn main() {
-    // Todo: turn into HashMap
+    // Todo: Turn user_options into HashMap
+    // Todo: Add while loop for getting user input which can be exited using a
+    // Exit option
     let user_options: [&str; 2] = [
         "Print 1st 10 fibonacci numbers",
         "Convert number to binary",
@@ -33,7 +37,13 @@ fn main() {
                 return;
             }
         };
-        number_to_binary(user_num);
+        
+        let u_user_num: u32 = user_num.try_into().unwrap();
+        println!(
+            "{} in binary: {}",
+            user_num,
+            number_to_binary(u_user_num)
+        );
     }
 }
 
@@ -55,6 +65,19 @@ fn fibonacci() -> String {
     ret_text
 }
 
-fn number_to_binary(user_num: i32) {
-    println!("{}", user_num.to_string());
+fn number_to_binary(u_user_num: u32) -> String{
+    let mut binary_str = String::new();
+    let mut u_int: u32 = u_user_num;
+
+    if u_int == 0 {
+        binary_str.push('0');
+    }
+
+    while u_int > 0 {
+        let remainder: u32 = u_int % 2;
+        binary_str.insert(0, from_digit(remainder, 10).unwrap());
+        u_int /= 2;
+    }
+
+    binary_str
 }
