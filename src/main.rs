@@ -1,16 +1,16 @@
 use std::char::from_digit;
-use std::convert::TryInto;
 use std::io::stdin;
+use std::convert::TryInto;
 
 fn main() {
-    // Todo: Turn user_options into HashMap
     let user_options: [&str; 3] = [
         "Print 1st 10 fibonacci numbers",
         "Convert number to binary",
         "Exit",
     ];
+    let mut display_text: String = String::new();
 
-    // Loop: display options & execute user choise until they exit 
+    // Display options & execute user choise until they exit 
     loop {
         // Print user_options as a numbered list
         println!("Enter number below to choose option:");
@@ -20,37 +20,19 @@ fn main() {
     
         // Get user input
         // Todo: Use Ok() or Err() for input validation
-        let mut user_option: String = String::new();
-        stdin().read_line(&mut user_option).unwrap();
-        user_option = user_option.trim().to_string();
+        let mut user_choice: String = String::new();
+        stdin().read_line(&mut user_choice).unwrap();
+        user_choice = user_choice.trim().to_string();
 
-        // Todo: reference HashMap in future
-        if user_option == "1" {
-            let fibonacci_text: String = fibonacci();
-            println!("{}", fibonacci_text);
-        } else if user_option == "2" {
-            println!("\nEnter number to convert to binary: ");
-            let mut user_num_res: String = String::new();
-            stdin().read_line(&mut user_num_res).unwrap();
-            let user_num: i32 = match user_num_res.trim().parse() {
-                Ok(num) => num,
-                Err(_) => {
-                    println!("Please enter a valid number");
-                    return;
-                }
-            };
-            
-            let u_user_num: u32 = user_num.try_into().unwrap();
-            println!(
-                "{} in binary: {}",
-                user_num,
-                number_to_binary(u_user_num)
-            );
-        } else if user_option == "3" {
+        if user_choice == "1" {
+            display_text = fibonacci();
+        } else if user_choice == "2" {
+            display_text = number_to_binary()
+        } else if user_choice == "3" {
             break;
         }
 
-        println!();
+        println!("{}\n", display_text);
     }
 }
 
@@ -72,19 +54,33 @@ fn fibonacci() -> String {
     ret_text
 }
 
-fn number_to_binary(u_user_num: u32) -> String{
-    let mut binary_str = String::new();
-    let mut u_int: u32 = u_user_num;
+fn number_to_binary() -> String {
+    println!("\nEnter number to convert to binary: ");
 
-    if u_int == 0 {
+    let mut user_num_res: String = String::new();
+    stdin().read_line(&mut user_num_res).unwrap();
+    let user_num: i32 = match user_num_res.trim().parse() {
+        Ok(num) => num,
+        Err(_) => {
+            println!("Please enter a valid number");
+            return String::new();
+        }
+    };
+    let mut u_user_num: u32 = user_num.try_into().unwrap();
+    let mut binary_str = String::new();
+    
+    // Build binary string
+    if u_user_num == 0 {
         binary_str.push('0');
     }
-
-    while u_int > 0 {
-        let remainder: u32 = u_int % 2;
-        binary_str.insert(0, from_digit(remainder, 10).unwrap());
-        u_int /= 2;
+    while u_user_num > 0 {
+        let remainder: u32 = u_user_num % 2;
+        binary_str.insert(0, from_digit(remainder, 10)
+            .unwrap());
+        u_user_num /= 2;
     }
+    
+    let ret_text: String = format!("\n{} in binary: {}\n", user_num_res.trim(), binary_str);
 
-    binary_str
+    ret_text    
 }
