@@ -31,7 +31,6 @@ fn main() {
         }
     
         // Get user input
-        // Todo: Use Ok() or Err() for input validation
         let mut user_choice: String = String::new();
         stdin().read_line(&mut user_choice).unwrap();
         
