@@ -1,37 +1,57 @@
 use std::char::from_digit;
-use std::io::stdin;
 use std::convert::TryInto;
+use std::io::stdin;
+use std::process::exit;
 
 fn main() {
-    let user_options: [&str; 3] = [
-        "Print 1st 10 fibonacci numbers",
-        "Convert number to binary",
-        "Exit",
-    ];
+    let mut user_options: Vec<(String, Box<dyn Fn() -> String>)> = Vec::new();
+    user_options.push((
+        String::from("Print 1st 10 fibonacci numbers"),
+        Box::new(fibonacci)
+    ));
+    user_options.push((
+        String::from("Convert number to binary"),
+        Box::new(number_to_binary)
+    ));
+    user_options.push((
+        String::from("Exit"),
+        Box::new(|| exit(0)),
+    ));
+    
     let mut display_text: String = String::new();
-
-    // Display options & execute user choise until they exit 
+    
     loop {
+    // Display options & execute user choise until they exit 
         // Print user_options as a numbered list
         println!("Enter number below to choose option:");
-        for i in 0..user_options.len() {
-            println!("{}. {}", i + 1, user_options[i]);
+        let mut i = 1;
+        for (option, _) in &user_options {
+            println!("{}. {}", i, option);
+            i += 1;
         }
     
         // Get user input
         // Todo: Use Ok() or Err() for input validation
         let mut user_choice: String = String::new();
         stdin().read_line(&mut user_choice).unwrap();
-        user_choice = user_choice.trim().to_string();
+        
+        // Convert input to a number
+        let option_index: usize = match user_choice.trim().parse() {
+            Ok(num) => num,
+            Err(_) => {
+                println!("Invalid input. Please enter number included in menu");
+                continue;}
+        };
 
-        if user_choice == "1" {
-            display_text = fibonacci();
-        } else if user_choice == "2" {
-            display_text = number_to_binary()
-        } else if user_choice == "3" {
-            break;
+        // Call function
+        if let Some(func) =
+            user_options.get(option_index - 1).map(|(_, f)| f.as_ref()) {
+            display_text = func();
+        } else {
+            println!("Invalid option");
         }
 
+        // Display function output
         println!("{}\n", display_text);
     }
 }
@@ -43,9 +63,9 @@ fn fibonacci() -> String {
 
     ret_text.push_str("\n1st 10 fibonacci numbers:");
 
-    for counter in 1..11 {
-        let next: i32 = prev + current;
+    for counter in 1..=10 {
         let fib_text: String = format!("\n{}: {}", (counter).to_string(), prev);
+        let next: i32 = prev + current;
         ret_text.push_str(&fib_text);
         prev = current;
         current = next;
@@ -80,7 +100,7 @@ fn number_to_binary() -> String {
         u_user_num /= 2;
     }
     
-    let ret_text: String = format!("\n{} in binary: {}\n", user_num_res.trim(), binary_str);
+    let ret_text: String = format!("\n{} in binary: {}", user_num_res.trim(), binary_str);
 
     ret_text    
 }
