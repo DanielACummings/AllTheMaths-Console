@@ -3,5 +3,5 @@
 version = 3
 
 [[package]]
-name = "all_the_maths_terminal"
+name = "all_the_maths_console"
 version = "0.1.0"
