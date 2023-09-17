@@ -1,7 +1,14 @@
 use std::char::from_digit;
 use std::convert::TryInto;
 use std::io::stdin;
+use std::option;
 use std::process::exit;
+
+// rem exit functionality from vec
+// use enum to number functions?
+// assign "Exit"'s number to be the enum length (accounts for 0 indexing)
+// 1st check for "Exit"'s number, then carry out main logic by calling the function corresponding to the enum number selected
+// Okay(()) will within "Exit"'s number conditional block?
 
 fn main() {
     let mut user_options: Vec<(String, Box<dyn Fn() -> String>)> = Vec::new();
@@ -13,10 +20,6 @@ fn main() {
         String::from("Convert number to binary"),
         Box::new(number_to_binary)
     ));
-    user_options.push((
-        String::from("Exit"),
-        Box::new(|| exit(0)),
-    ));
     
     let mut display_text: String = String::new();
     
@@ -24,11 +27,13 @@ fn main() {
     // Display options & execute user choise until they exit 
         // Print user_options as a numbered list
         println!("Enter number below to choose option:");
-        let mut i = 1;
+        let mut i = 0;
         for (option, _) in &user_options {
-            println!("{}. {}", i, option);
             i += 1;
+            println!("{}. {}", i, option);
         }
+        // Print final number option for exiting
+        print!("{}. Exit", user_options.len() + 1);
     
         // Get user input
         let mut user_choice: String = String::new();
@@ -42,8 +47,11 @@ fn main() {
                 continue;}
         };
 
-        // Call function
-        if let Some(func) =
+        // Call function or exit
+        if option_index == user_options.len() + 1 {
+            break;
+        }
+        else if let Some(func) =
             user_options.get(option_index - 1).map(|(_, f)| f.as_ref()) {
             display_text = func();
         } else {
@@ -53,6 +61,9 @@ fn main() {
         // Display function output
         println!("{}\n", display_text);
     }
+
+    // Okay(()) for eventual session log
+    exit(0);
 }
 
 fn fibonacci() -> String {
