@@ -33,7 +33,7 @@ fn main() {
             println!("{}. {}", i, option);
         }
         // Print final number option for exiting
-        print!("{}. Exit", user_options.len() + 1);
+        println!("{}. Exit", user_options.len() + 1);
     
         // Get user input
         let mut user_choice: String = String::new();
@@ -85,6 +85,7 @@ fn fibonacci() -> String {
 }
 
 fn number_to_binary() -> String {
+    // TODO: Handle large numbers
     println!("\nEnter number to convert to binary: ");
 
     let mut user_num_res: String = String::new();
