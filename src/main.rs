@@ -1,16 +1,19 @@
+use chrono::Utc;
 use std::char::from_digit;
 use std::convert::TryInto;
+use std::fs::File;
+use std::io::prelude::*;
+use std::io::Result;
 use std::io::stdin;
-use std::option;
-use std::process::exit;
 
-// rem exit functionality from vec
-// use enum to number functions?
-// assign "Exit"'s number to be the enum length (accounts for 0 indexing)
-// 1st check for "Exit"'s number, then carry out main logic by calling the function corresponding to the enum number selected
-// Okay(()) will within "Exit"'s number conditional block?
+fn main() -> Result<()> {
+    let current_datetime = Utc::now();
+    let formatted_datetime = current_datetime.format("%Y-%m-%d-%H%M%S");
+    let file_name = format!(
+        "AllTheMaths_Log_UTC{}.txt", formatted_datetime);
+    let mut file = File::create(file_name)?;
 
-fn main() {
+    let mut display_text: String = String::new();
     let mut user_options: Vec<(String, Box<dyn Fn() -> String>)> = Vec::new();
     user_options.push((
         String::from("Print 1st 10 fibonacci numbers"),
@@ -21,12 +24,10 @@ fn main() {
         Box::new(number_to_binary)
     ));
     
-    let mut display_text: String = String::new();
-    
     loop {
     // Display options & execute user choise until they exit 
         // Print user_options as a numbered list
-        println!("Enter number below to choose option:");
+        println!("\nEnter number below to choose option:");
         let mut i = 0;
         for (option, _) in &user_options {
             i += 1;
@@ -58,12 +59,12 @@ fn main() {
             println!("Invalid option");
         }
 
-        // Display function output
-        println!("{}\n", display_text);
+        // Display function output & write it to session log
+        println!("\n{}", display_text);
+        file.write_all(format!("\n{}\n", display_text).as_bytes())?;
     }
 
-    // Okay(()) for eventual session log
-    exit(0);
+    Ok(())
 }
 
 fn fibonacci() -> String {
@@ -71,7 +72,7 @@ fn fibonacci() -> String {
     let mut prev: i32 = 0;
     let mut ret_text: String = String::new();
 
-    ret_text.push_str("\n1st 10 fibonacci numbers:");
+    ret_text.push_str("1st 10 fibonacci numbers:");
 
     for counter in 1..=10 {
         let fib_text: String = format!("\n{}: {}", (counter).to_string(), prev);
@@ -98,7 +99,7 @@ fn number_to_binary() -> String {
         }
     };
     let mut u_user_num: u32 = user_num.try_into().unwrap();
-    let mut binary_str = String::new();
+    let mut binary_str: String = String::new();
     
     // Build binary string
     if u_user_num == 0 {
@@ -111,7 +112,7 @@ fn number_to_binary() -> String {
         u_user_num /= 2;
     }
     
-    let ret_text: String = format!("\n{} in binary: {}", user_num_res.trim(), binary_str);
+    let ret_text: String = format!("{} in binary: {}", user_num_res.trim(), binary_str);
 
     ret_text    
 }
